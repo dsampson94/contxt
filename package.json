@@ -1,0 +1,24 @@
+{
+  "name": "contxt",
+  "author": "David Sampson",
+  "version": "1.0.0",
+  "description": "A library to collect code from specified files and directories for easy context sharing with GPTs",
+  "main": "dist/index.js",
+  "bin": {
+    "app-context": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "postinstall": "npx app-context"
+  },
+  "keywords": ["context", "files", "directories"],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "devDependencies": {
+    "typescript": "^4.0.0",
+    "@types/node": "^14.0.0"
+  }
+}
