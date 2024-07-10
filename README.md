@@ -1,6 +1,6 @@
-# App Context
+# Contxt
 
-App Context is a library that collects context from specified files and directories in a project. This is particularly useful for generating a comprehensive view of your project files, which can be used for various purposes such as code analysis, documentation, or AI assistance.
+Contxt is a library that collects context from specified files and directories in a project. This is particularly useful for generating a comprehensive view of your project files, which can be used for various purposes such as code analysis, documentation, or AI assistance.
 
 ## Features
 
