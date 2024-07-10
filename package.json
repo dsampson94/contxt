@@ -1,7 +1,7 @@
 {
   "name": "contxt",
   "author": "David Sampson",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A library to collect code from specified files and directories for easy context sharing with GPTs",
   "main": "dist/index.js",
   "bin": {
