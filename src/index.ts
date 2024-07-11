@@ -32,17 +32,7 @@ function isNodeError(error: unknown): error is NodeJS.ErrnoException {
  * @param configPath - The path to the configuration file.
  */
 const createDefaultConfig = (configPath: string): void => {
-    const defaultConfig = {
-        /**
-         * Configuration file for app-context. Specify the files and directories to include and exclude.
-         *
-         * include: An array of files and directories to include in the context.
-         * Each item should be a string representing the relative path from the project root.
-         *
-         * exclude: An array of files and directories to exclude from the context.
-         * Each item should be a string representing the relative path from the project root.
-         * Items listed here will be excluded even if they are within directories listed in the 'include' array.
-         */
+    const defaultConfig: Config = {
         include: [
             'package.json',
             'tsconfig.json',
@@ -80,7 +70,19 @@ const addToGitignore = ({ gitignorePath, entries }: AddToGitignoreParams): void 
  * Generates the context file based on the current configuration.
  */
 const generateContextFile = (): void => {
-    const config: Config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+    let config: Config;
+
+    try {
+        config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+    } catch (error) {
+        if (isNodeError(error) && error.code === 'ENOENT') {
+            console.warn(`Warning: ${CONFIG_FILE_NAME} not found. Creating default configuration.`);
+            createDefaultConfig(configFilePath);
+            config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+        } else {
+            throw error;
+        }
+    }
 
     try {
         if (fs.existsSync(outputFilePath)) {
