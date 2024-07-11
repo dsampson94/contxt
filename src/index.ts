@@ -3,22 +3,26 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { collectContext } from './collectContext';
-import { AddToGitignoreParams } from './types';
+import { AddToGitignoreParams, Config } from './types';
 
-/**
- * Configuration file name.
- */
 const CONFIG_FILE_NAME = 'context.config.json';
-
-/**
- * Output file name.
- */
 const OUTPUT_FILE_NAME = 'context.txt';
 
 const rootDir = process.cwd();
 const configFilePath = path.join(rootDir, CONFIG_FILE_NAME);
 const outputFilePath = path.join(rootDir, OUTPUT_FILE_NAME);
 const gitignorePath = path.join(rootDir, '.gitignore');
+let timeout: NodeJS.Timeout | null = null;
+
+/**
+ * Type guard to check if an error is a Node.js error with a code.
+ *
+ * @param error - The error to check.
+ * @returns Whether the error is a Node.js error with a code.
+ */
+function isNodeError(error: unknown): error is NodeJS.ErrnoException {
+    return typeof error === 'object' && error !== null && 'code' in error;
+}
 
 /**
  * Creates a default configuration file if it doesn't exist.
@@ -48,7 +52,8 @@ const createDefaultConfig = (configPath: string): void => {
             'api',
             'README.md',
         ],
-        exclude: []
+        exclude: [],
+        allowedExtensions: ['.js', '.ts', '.tsx', '.jsx', '.json', '.md', '.html', '.css']
     };
 
     fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2), 'utf-8');
@@ -59,7 +64,7 @@ const createDefaultConfig = (configPath: string): void => {
  *
  * @param params - The parameters for adding entries to the .gitignore file.
  */
-const addToGitignore = ({gitignorePath, entries}: AddToGitignoreParams): void => {
+const addToGitignore = ({ gitignorePath, entries }: AddToGitignoreParams): void => {
     let gitignoreContent = '';
     if (fs.existsSync(gitignorePath)) {
         gitignoreContent = fs.readFileSync(gitignorePath, 'utf-8');
@@ -75,15 +80,53 @@ const addToGitignore = ({gitignorePath, entries}: AddToGitignoreParams): void =>
  * Generates the context file based on the current configuration.
  */
 const generateContextFile = (): void => {
-    const config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+    const config: Config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
 
-    if (fs.existsSync(outputFilePath)) {
-        fs.unlinkSync(outputFilePath);
+    try {
+        if (fs.existsSync(outputFilePath)) {
+            fs.unlinkSync(outputFilePath);
+        }
+    } catch (error) {
+        if (isNodeError(error) && error.code === 'EBUSY') {
+            console.error(`Error: The file ${outputFilePath} is currently in use and cannot be deleted.`);
+            return;
+        }
+        throw error;
     }
 
-    const context = collectContext(config.include.map((item: string) => ({path: item})), rootDir, config.exclude || []);
+    const context = collectContext(
+        config.include.map((item: string) => ({ path: item })),
+        rootDir,
+        config.exclude || [],
+        config.allowedExtensions || []
+    );
 
     fs.writeFileSync(outputFilePath, context, 'utf-8');
+};
+
+/**
+ * Watches the specified files and directories for changes and updates the context file.
+ *
+ * @param config - The configuration object containing the include list.
+ */
+const watchFiles = (config: Config): void => {
+    const debounceUpdate = () => {
+        if (timeout) {
+            clearTimeout(timeout);
+        }
+        timeout = setTimeout(generateContextFile, 100);
+    };
+
+    config.include.forEach(item => {
+        const fullPath = path.join(rootDir, item);
+        if (fs.existsSync(fullPath)) {
+            if (fs.lstatSync(fullPath).isDirectory()) {
+                fs.watch(fullPath, { recursive: true }, debounceUpdate);
+            } else {
+                fs.watchFile(fullPath, debounceUpdate);
+            }
+        }
+    });
 };
 
 /**
@@ -100,12 +143,15 @@ const run = (): void => {
 
     generateContextFile();
 
-    addToGitignore({gitignorePath, entries: [CONFIG_FILE_NAME, OUTPUT_FILE_NAME]});
+    addToGitignore({ gitignorePath, entries: [CONFIG_FILE_NAME, OUTPUT_FILE_NAME] });
 
-    fs.watch(configFilePath, (eventType) => {
-        if (eventType === 'change') {
-            generateContextFile();
-        }
+    const config: Config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+    watchFiles(config);
+
+    fs.watchFile(configFilePath, () => {
+        const updatedConfig: Config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+        watchFiles(updatedConfig);
+        generateContextFile();
     });
 };
 

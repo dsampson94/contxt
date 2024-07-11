@@ -13,6 +13,7 @@ export interface ReadDirectoryParams {
     rootDir: string;
     basePath: string;
     excludePaths: string[];
+    allowedExtensions: string[];
 }
 
 /**
@@ -37,4 +38,13 @@ export interface IsExcludedParams {
 export interface AddToGitignoreParams {
     gitignorePath: string;
     entries: string[];
+}
+
+/**
+ * Interface representing the configuration for the context collection.
+ */
+export interface Config {
+    include: string[];
+    exclude: string[];
+    allowedExtensions: string[];
 }
