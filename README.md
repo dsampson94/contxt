@@ -22,7 +22,11 @@ You can install Contxt via npm:
 
 ## Usage
 
-Create a context.config.json file in the root of your project to specify the files and directories to include or exclude:
+Run Contxt:
+
+    npx contxt
+
+This command creates a context.config.json file in the root of your project to specify the files and directories to include or exclude:
 
     {
       "include": [
@@ -38,15 +42,13 @@ Create a context.config.json file in the root of your project to specify the fil
       "allowedExtensions": [".js", ".ts", ".tsx", ".jsx", ".json", ".md", ".html", ".css"]
   }
 
-Run Contxt:
-
-    npx contxt
-
 Configuration
 
     include: An array of files and directories to include in the context.
     exclude: An array of files and directories to exclude from the context.
     allowedExtensions: An array of file extensions that are allowed to be included in the context.
+
+As well as a context.txt file which contains the specified files with their paths. this file can be used to share with GPTs to receive more comprehensice completions, driving productivity and saving time.
 
 ## Building the Project
 
