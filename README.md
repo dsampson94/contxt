@@ -12,6 +12,17 @@
 - Supports various file types: `.js`, `.ts`, `.tsx`, `.jsx`, `.json`, `.md`, `.html`, `.css`.
 - Adds configuration and output files to `.gitignore` automatically
 
+Future features currently scoped:
+
+- Add config setting to collect all relevant root files for smaller projects.
+- Add config setting to cap the size of the context.txt file.
+- Add a transformer to analyse the context.txt when it is updated and provide completions to enhance the project context.
+
+## Bugs
+
+- This project is still a baby, if you find a bug or want to make an improvement please do.
+- My email is davesampson15@gmail.com. 
+
 ## Installation
 
 You can install Contxt via npm:
