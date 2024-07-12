@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",
-    "prepare": "npx contxt"
+    "postinstall": "\"%ProgramFiles%\\nodejs\\node.exe\" dist/postinstall.js"
   },
   "keywords": [
     "gpt context sharing",
@@ -24,8 +24,5 @@
   "devDependencies": {
     "@types/node": "^14.0.0",
     "typescript": "^4.0.0"
-  },
-  "dependencies": {
-    "contxt": "^1.1.0"
   }
 }
