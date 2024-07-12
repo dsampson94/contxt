@@ -41,7 +41,7 @@ const isExcluded = ({ fullPath, excludeItems }: IsExcludedParams): boolean => {
  */
 const readFile = ({ file, relativePath }: ReadFileParams): string => {
     try {
-        return `=== Path: ${relativePath}\n${fs.readFileSync(file, 'utf-8')} === \n`;
+        return `Path: ${relativePath}\n${fs.readFileSync(file, 'utf-8')}\n`;
     } catch (error) {
         return '';
     }
