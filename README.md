@@ -3,8 +3,6 @@
 [![npm version](https://img.shields.io/npm/v/contxt.svg)](https://www.npmjs.com/package/contxt)
 [![License](https://img.shields.io/npm/l/contxt.svg)](https://github.com/dsampson94/contxt/blob/main/LICENSE)
 
-Contxt is a tool that collects code from specific files and directories within the project and automatically adds them to a file called context.txt. This makes context sharing with GPTs much easier, allows users to receives more comprehensive completions, build their projects faster and save hundreds of clicks!
-
 ## Features
 
 - Collects code from specified files and directories and adds to context.txt
