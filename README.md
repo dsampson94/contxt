@@ -1,5 +1,6 @@
 # Contxt
 
+[![Github repo](https://img.shields.io/badge/github-repo-red)](https://github.com/dsampson94/contxt)
 [![npm version](https://img.shields.io/npm/v/contxt.svg)](https://www.npmjs.com/package/contxt)
 [![License](https://img.shields.io/npm/l/contxt.svg)](https://github.com/dsampson94/contxt/blob/main/LICENSE)
 
@@ -10,7 +11,7 @@
 - Allows excluding specific files and directories
 - Automatically updates context when watched files change.
 - Adds configuration and output files to `.gitignore` automatically
-- Supports various file types: `.js`, `.ts`, `.tsx`, `.jsx`, `.json`, `.md`, `.html`, `.css`, `.mjs`.
+- Supports various file types.
 
 Future features currently scoped:
 
@@ -21,7 +22,6 @@ Future features currently scoped:
 ## Bugs
 
 - If you find a bug or want to make an improvement please do.
-- My email is davesampson15@gmail.com. 
 
 ## Installation
 
