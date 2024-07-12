@@ -9,7 +9,7 @@
 - Excludes non-code files and directories based on user configuration.
 - Allows excluding specific files and directories
 - Automatically updates context when watched files change.
-- Supports various file types: `.js`, `.ts`, `.tsx`, `.jsx`, `.json`, `.md`, `.html`, `.css`.
+- Supports various file types: `.js`, `.ts`, `.tsx`, `.jsx`, `.json`, `.md`, `.html`, `.css`, `.mjs`.
 - Adds configuration and output files to `.gitignore` automatically
 
 Future features currently scoped:
@@ -20,7 +20,7 @@ Future features currently scoped:
 
 ## Bugs
 
-- This project is still a baby, if you find a bug or want to make an improvement please do.
+- If you find a bug or want to make an improvement please do.
 - My email is davesampson15@gmail.com. 
 
 ## Installation
@@ -48,7 +48,7 @@ This command creates a context.config.json file in the root of your project to s
           "README.md"
       ],
       "exclude": [],
-      "allowedExtensions": [".js", ".ts", ".tsx", ".jsx", ".json", ".md", ".html", ".css"]
+      "allowedExtensions": [".js", ".ts", ".tsx", ".jsx", ".json", ".md", ".html", ".css", ".mjs"]
   }
 
 Configuration
@@ -87,3 +87,4 @@ Contributions are welcome! Please open an issue or submit a pull request for any
     Make your changes.
     Commit your changes (git commit -am 'Add new feature').
     Push to the branch (git push origin feature-branch).
+    Open a pull request.

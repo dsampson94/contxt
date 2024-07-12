@@ -18,10 +18,8 @@ let timeout: NodeJS.Timeout | null = null;
  */
 const watchFiles = (config: Config): void => {
     const debounceUpdate = () => {
-        if (timeout) {
-            clearTimeout(timeout);
-        }
-        timeout = setTimeout(generateContextFile, 100);
+        if (timeout) clearTimeout(timeout);
+        timeout = setTimeout(generateContextFile, 50);
     };
 
     config.include.forEach(item => {
