@@ -9,8 +9,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
-    "postinstall": "\"%ProgramFiles%\\nodejs\\node.exe\" dist/postinstall.js"
+    "start": "node dist/index.js"
   },
   "keywords": [
     "gpt context sharing",
