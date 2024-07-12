@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { IncludeItem, ReadDirectoryParams, ReadFileParams, IsExcludedParams } from './types';
+import { IncludeItem, IsExcludedParams, ReadDirectoryParams, ReadFileParams, DirectoryReadResult } from './types';
 
 /**
  * Default allowed file extensions for code files.
  */
-const defaultAllowedExtensions = ['.js', '.ts', '.tsx', '.jsx', '.json', '.md', '.html', '.css'];
+const defaultAllowedExtensions: string[] = ['.js', '.ts', '.tsx', '.jsx', '.json', '.md', '.html', '.css', '.mjs'];
 
 /**
  * Validates and filters the allowed extensions to ensure only code-related extensions are included.
@@ -24,7 +24,10 @@ const validateExtensions = (extensions: string[]): string[] => {
  * @returns A boolean indicating whether the path is excluded.
  */
 const isExcluded = ({ fullPath, excludeItems }: IsExcludedParams): boolean => {
-    return excludeItems.some(excludePath => {
+    const excludedFiles = ['context.config.json', 'context.txt'];
+    const isExcludedFile = excludedFiles.some(excluded => fullPath.endsWith(excluded));
+
+    return isExcludedFile || excludeItems.some(excludePath => {
         const excludeFullPath = path.resolve(excludePath);
         return fullPath.startsWith(excludeFullPath);
     });
@@ -39,7 +42,7 @@ const isExcluded = ({ fullPath, excludeItems }: IsExcludedParams): boolean => {
 const readFile = ({ file, relativePath }: ReadFileParams): string => {
     try {
         return `// Path: ${relativePath}\n${fs.readFileSync(file, 'utf-8')}\n`;
-    } catch (error: any) {
+    } catch (error) {
         return '';
     }
 };
@@ -48,10 +51,11 @@ const readFile = ({ file, relativePath }: ReadFileParams): string => {
  * Reads the contents of a directory and its subdirectories.
  *
  * @param params - The parameters for reading the directory.
- * @returns A string containing the contents of the directory.
+ * @returns An object containing the content and paths.
  */
-const readDirectory = ({ dir, rootDir, basePath, excludePaths, allowedExtensions }: ReadDirectoryParams): string => {
+const readDirectory = ({ dir, rootDir, basePath, excludePaths, allowedExtensions }: ReadDirectoryParams): DirectoryReadResult => {
     let content = '';
+    const paths: string[] = [];
     const files = fs.readdirSync(dir);
 
     files.forEach((file) => {
@@ -60,14 +64,23 @@ const readDirectory = ({ dir, rootDir, basePath, excludePaths, allowedExtensions
 
         if (!isExcluded({ fullPath: filePath, excludeItems: excludePaths })) {
             if (fs.lstatSync(filePath).isDirectory()) {
-                content += readDirectory({ dir: filePath, rootDir, basePath: displayPath, excludePaths, allowedExtensions });
+                const result = readDirectory({
+                    dir: filePath,
+                    rootDir,
+                    basePath: displayPath,
+                    excludePaths,
+                    allowedExtensions
+                });
+                content += result.content;
+                paths.push(...result.paths);
             } else if (allowedExtensions.includes(path.extname(filePath))) {
                 content += readFile({ file: filePath, relativePath: displayPath });
+                paths.push(displayPath);
             }
         }
     });
 
-    return content;
+    return { content, paths };
 };
 
 /**
@@ -77,28 +90,38 @@ const readDirectory = ({ dir, rootDir, basePath, excludePaths, allowedExtensions
  * @param rootDir - The root directory of the project.
  * @param excludeItems - An array of items to exclude from the context.
  * @param allowedExtensions - An array of allowed file extensions.
- * @returns A string containing the collected context.
+ * @returns An object containing the collected content and paths.
  */
 export const collectContext = (
     includeItems: IncludeItem[],
     rootDir: string,
     excludeItems: string[],
     allowedExtensions: string[] = defaultAllowedExtensions
-): string => {
+): DirectoryReadResult => {
     const validExtensions = validateExtensions(allowedExtensions);
     const projectName = path.basename(rootDir);
-    let context = '';
+    let content = '';
+    const paths: string[] = [];
 
     includeItems.forEach((item) => {
         const fullPath = path.join(rootDir, item.path);
         if (fs.existsSync(fullPath) && !isExcluded({ fullPath, excludeItems })) {
             if (fs.lstatSync(fullPath).isDirectory()) {
-                context += readDirectory({ dir: fullPath, rootDir, basePath: path.join(projectName, item.path), excludePaths: excludeItems, allowedExtensions: validExtensions });
+                const result = readDirectory({
+                    dir: fullPath,
+                    rootDir,
+                    basePath: path.join(projectName, item.path),
+                    excludePaths: excludeItems,
+                    allowedExtensions: validExtensions
+                });
+                content += result.content;
+                paths.push(...result.paths);
             } else if (validExtensions.includes(path.extname(fullPath))) {
-                context += readFile({ file: fullPath, relativePath: path.join(projectName, item.path) });
+                content += readFile({ file: fullPath, relativePath: path.join(projectName, item.path) });
+                paths.push(path.join(projectName, item.path));
             }
         }
     });
 
-    return context;
+    return { content, paths };
 };

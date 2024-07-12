@@ -59,6 +59,21 @@ Configuration
 
 As well as a context.txt file which contains the specified files with their paths. this file can be used to share with GPTs to receive more comprehensice completions, driving productivity and saving time.
 
+After running npx contxt, your context.txt file might look like this:
+
+    # Included files:
+    contxt/
+      - contxt/package.json
+      - contxt/README.md
+      ...
+    
+    // Path: contxt/package.json
+    {
+        "name": "contxt",
+        "author": "David Sampson",
+        ...
+    }
+
 ## Building the Project
 
     npm run build
@@ -72,4 +87,3 @@ Contributions are welcome! Please open an issue or submit a pull request for any
     Make your changes.
     Commit your changes (git commit -am 'Add new feature').
     Push to the branch (git push origin feature-branch).
-    Open a pull request.

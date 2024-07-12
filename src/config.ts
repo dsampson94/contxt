@@ -16,5 +16,5 @@ export const defaultConfig: Config = {
         'README.md',
     ],
     exclude: [],
-    allowedExtensions: ['.js', '.ts', '.tsx', '.jsx', '.json', '.md', '.html', '.css', '.txt']
+    allowedExtensions: ['.js', '.ts', '.tsx', '.jsx', '.json', '.md', '.html', '.css', '.txt', '.mjs']
 };

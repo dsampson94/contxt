@@ -48,3 +48,11 @@ export interface Config {
     exclude: string[];
     allowedExtensions: string[];
 }
+
+/**
+ * Interface representing the result of reading a directory.
+ */
+export interface DirectoryReadResult {
+    content: string;
+    paths: string[];
+}
