@@ -4,9 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { collectContext } from './collectContext';
 import { AddToGitignoreParams, Config } from './types';
-
-const CONFIG_FILE_NAME = 'context.config.json';
-const OUTPUT_FILE_NAME = 'context.txt';
+import { CONFIG_FILE_NAME, OUTPUT_FILE_NAME, defaultConfig } from './config';
 
 const rootDir = process.cwd();
 const configFilePath = path.join(rootDir, CONFIG_FILE_NAME);
@@ -26,26 +24,10 @@ function isNodeError(error: unknown): error is NodeJS.ErrnoException {
 
 /**
  * Creates a default configuration file if it doesn't exist.
- * The configuration file allows the user to specify which files and directories
- * to include and exclude in the context collection process.
  *
  * @param configPath - The path to the configuration file.
  */
 const createDefaultConfig = (configPath: string): void => {
-    const defaultConfig: Config = {
-        include: [
-            'package.json',
-            'tsconfig.json',
-            'tailwind.config.json',
-            'src',
-            'lib',
-            'api',
-            'README.md',
-        ],
-        exclude: [],
-        allowedExtensions: ['.js', '.ts', '.tsx', '.jsx', '.json', '.md', '.html', '.css']
-    };
-
     fs.writeFileSync(configPath, JSON.stringify(defaultConfig, null, 2), 'utf-8');
 };
 
