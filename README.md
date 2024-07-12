@@ -9,8 +9,8 @@
 - Excludes non-code files and directories based on user configuration.
 - Allows excluding specific files and directories
 - Automatically updates context when watched files change.
-- Supports various file types: `.js`, `.ts`, `.tsx`, `.jsx`, `.json`, `.md`, `.html`, `.css`, `.mjs`.
 - Adds configuration and output files to `.gitignore` automatically
+- Supports various file types: `.js`, `.ts`, `.tsx`, `.jsx`, `.json`, `.md`, `.html`, `.css`, `.mjs`.
 
 Future features currently scoped:
 
