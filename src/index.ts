@@ -1,8 +1,6 @@
-#!/usr/bin/env node
-
 import * as fs from 'fs';
 import * as path from 'path';
-import { generateContextFile, createDefaultConfig, addToGitignore } from './utils';
+import { addToGitignore, createDefaultConfig, generateContextFile } from './utils';
 import { CONFIG_FILE_NAME, OUTPUT_FILE_NAME } from './config';
 import { Config } from './types';
 
@@ -14,7 +12,7 @@ let timeout: NodeJS.Timeout | null = null;
 /**
  * Watches the specified files and directories for changes and updates the context file.
  *
- * @param config - The configuration object containing the include list.
+ * @param config - The configuration object (now including everything from the root).
  */
 const watchFiles = (config: Config): void => {
     const debounceUpdate = () => {
@@ -35,11 +33,11 @@ const watchFiles = (config: Config): void => {
 };
 
 /**
- * Main function to run the script. This function checks if the configuration file exists,
- * creates it if it doesn't, reads the configuration, and then collects the context based
- * on the include and exclude paths specified in the configuration. The collected context
- * is written to the output file, and the configuration and output files are added to .gitignore.
- * It also sets up a watcher on the configuration file to regenerate the context file when the configuration changes.
+ * Main function to run the script. This function:
+ *   - Checks if the configuration file exists, and creates it if not.
+ *   - Generates the context file from the entire project root.
+ *   - Adds the configuration and output files to .gitignore.
+ *   - Sets up file watchers so changes update the context file.
  */
 const run = (): void => {
     if (!fs.existsSync(configFilePath)) {
