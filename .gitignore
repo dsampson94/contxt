@@ -40,4 +40,4 @@ build/
 .DS_Store
 .idea
 context.config.json
-context.txt
+con.txt

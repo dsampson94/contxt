@@ -1,7 +1,7 @@
 {
   "name": "contxt",
   "author": "David Sampson",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "description": "A library to collect code from specified files and directories for easy context sharing with GPTs",
   "main": "dist/index.js",
   "bin": {
@@ -25,6 +25,6 @@
     "typescript": "^4.0.0"
   },
   "dependencies": {
-    "contxt": "^1.4.0"
+    "contxt": "^1.4.3"
   }
 }
